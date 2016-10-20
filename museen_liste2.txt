@@ -1,0 +1,19 @@
+"museums_name","count","latitude","longitude"
+"BallinStadt - das Auswanderermuseum Hamburg",2087,53.520995,10.016441
+"Bucerius Kunst Forum",5385,53.551116,9.991657
+"Deichtorhallen Hamburg - Internationale Kunst und Fotografie",1182,53.546251,10.008064
+"Hafenmuseum Hamburg",444,53.525599,10.000311
+"Hamburger Kunsthalle",12718,53.555511,10.002546
+"HSV-Museum",2068,53.587733,9.900266
+"Internationales Maritimes Museum Hamburg",1562,53.543364,9.999778
+"Jenisch Haus",153,53.5525,9.8655
+"Jüdischer Friedhof in Hamburg-Altona",155,53.54952,9.95039
+"KZ-Gedenkstätte Neuengamme",7621,53.42704,10.22646
+"Medizinhistorisches Museum Hamburg",303,53.593752,9.977268
+"Mineralogisches Museum im CeNaK",20,53.56802,9.97871
+"Museum für Bergedorf und die Vierlande",324,53.48965,10.212389
+"Museum für Hamburgische Geschichte",2945,53.551083,9.973258
+"Museum für Völkerkunde Hamburg",2306,53.568322,9.989279
+"Sammlung Falckenberg - Deichtorhallen Hamburg",211,53.455318,9.987572
+"Speicherstadtmuseum",85,53.543113,9.987587
+"Zoologisches Museum im CeNaK",1691,53.56802,9.97871
