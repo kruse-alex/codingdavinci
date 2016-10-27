@@ -18,7 +18,7 @@ require(data.table)
 shinyServer(
   function(input, output, session){
     
-    #setwd("C:/Users/akruse/Documents/R/CDV/CDV/")
+    #setwd("C:/Users/akruse/Documents/R/CDV/CDVapp/")
     ger_plz <- readOGR(dsn = ".", layer = "gerplz3")
     schools <- read.table("SchulenPLZfull2.csv", header = T, sep = ";")
     schools2 <- read.table("SchulenPLZfull3.csv", header = T, sep = ";")
