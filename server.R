@@ -22,7 +22,7 @@ shinyServer(
     ger_plz <- readOGR(dsn = ".", layer = "gerplz3")
     schools <- read.table("SchulenPLZfull2.csv", header = T, sep = ";")
     schools2 <- read.table("SchulenPLZfull3.csv", header = T, sep = ";")
-    artmus <- read.table("museen_liste2.txt", header = T, sep = ",")
+    artmus <- read.table("museen_liste2.csv", header = T, sep = ",")
     mydata <- read.table("mydatafull.csv", header = T, sep = ";")
     
     observe({
