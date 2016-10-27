@@ -5,6 +5,7 @@
 library(shiny)
 library(leaflet)
 library(rgdal)
+require(artyfarty)
 require(shinythemes)
 
 #############################################################################################################################################
@@ -12,43 +13,43 @@ require(shinythemes)
 #############################################################################################################################################
 
 vars <- c(
-  "Schüler" = "stcnt",
-  "Gruppenbuchungen" = "zipcnt",
-  "Schüler pro Gruppenbuchung" = "zpcnt_s")
+  "SchÃ¼ler" = "stcnt",
+  "MuseumsausflÃ¼ge" = "zipcnt",
+  "MuseumsausflÃ¼ge/SchÃ¼ler" = "zpcnt_s")
 
-setwd("C:/Users/akruse/Documents/R/CDV/CDV_final/")
-mydata <- read.table("mydata.csv", header = T, sep = ";")
+#setwd("C:/Users/akruse/Documents/R/CDV/CDV/")
+mydata <- read.table("mydatafull.csv", header = T, sep = ";")
 
 shinyUI(
   bootstrapPage(theme = shinytheme("flatly"),div(class="outer",includeCSS("style.css"),
                     
 
-  navbarPage(title="Hamburger Schüler im Museum", inverse = T,
+  navbarPage(title="Hamburger SchÃ¼ler im Museum", inverse = T,
              
              tabPanel("Karte",
                       sidebarLayout( 
-  mainPanel(leafletOutput("ger_plz.map", height = "750")),
+  mainPanel(leafletOutput("ger_plz.map", height = "800")),
   
-  sidebarPanel(h3("Was geht hier App?"),
-               p("Moinsen! Diese App zeigt an, wie häufig die Schüler aus den verschiedenen Stadteilen einen Schulausflug in die hamburger Museen gemacht haben. Folgende Funktionen hat diese interaktive Karte:"),
+  sidebarPanel(h3("Was geht hier ab?"),
+               p("Moin! Diese App zeigt an, wie h?ufig die SchÃ¼ler aus den verschiedenen Stadteilen einen Schulausflug in die hamburger Museen gemacht haben. Folgende Funktionen hat diese interaktive Karte:"),
                
-               HTML("<ul><li>Die Karte kann die Anzahl der Schüler oder die Anzahl der Gruppenbuchungen pro Postleitzahl anzeigen. Darüber hinaus kann man sich das Verhältnis (Schüler pro Gruppenbuchung) anzeigen lassen.</li><li>Klickt man auf einen Stadtteil erhält man alle Informationen im Überblick. Man kann jederzeit weiter herein oder heraus zoomen.</li><li>Weiterhin zeigen die blauen Kreise die Schulen und die schwarzen Kreise die Museen an. Klickt man auf diese erhält man Informationen zu den Objekten.</li></ul>"),
-               HTML("<strong>Ein Bespiel:</strong> In 20355 Hamburg (im Zentrum von Hamburg) gibt es zwar viele Schüler, aber vergleichsweise wenige Gruppenbuchungen (Tipp: Klicke auf Schüler pro Gruppenbuchung), obwohl die Schulen in 20355 sogar nahe an den Museen liegen :("),
+               HTML("<ul><li>Die Karte kann die Anzahl der SchÃ¼ler oder die Anzahl der MuseumsausflÃ¼ge pro Postleitzahl anzeigen. DarÃ¼ber hinaus kann man sich das Verh?ltnis (MusuemsausflÃ¼ge/SchÃ¼ler) anzeigen lassen.</li><li>Klickt man auf einen Stadtteil erhÃ¤lt man alle Informationen im Ãœberblick. Man kann jederzeit weiter herein oder heraus zoomen.</li><li>Weiterhin zeigen die blauen Kreise die Schulen und die schwarzen Kreise die Museen an. Klickt man auf diese erhÃ¤lt man Informationen zu den Objekten.</li></ul>"),
+               HTML("<strong>Ein Bespiel:</strong> Lasse Dir zun?chst die Karte mit dem Verh?ltnis MuseumsausflÃ¼ge/SchÃ¼ler anzeigen. Im Zentrum von Hamburg siehst du den gr?n eingef?rbten Stadtteil 20146 HH-Rotherbaum. SchÃ¼ler aus dieser Gegend gehen besonders oft ins Museum :) Wenn Du wissen mÃ¶chtest welche Schulen in dieser Gegend liegen, gehe auf den Tab Schulen und suche nach 20146."),
                br(),
                br(),
-               p("Viel Spaß mit der App!"),
+               p("Und was geht in Deiner Hood? Finde es heraus!"),
                br(),
     
     
                #selectInput("kennzahl", "Kennzahl", vars, selected = "zipcnt"),
                radioButtons("kennzahl", "Was soll auf der Karte angezeigt werden?", vars),
-               checkboxInput("legend", "Legenden", TRUE), 
+               checkboxInput("legende", "Legenden", T), 
                width = 3
   ), position = "right"
   )
 ),
 
-tabPanel("Daten", 
+tabPanel("Schulen", 
          # Use a fluid Bootstrap layout
          fluidPage(    
            
@@ -63,14 +64,17 @@ tabPanel("Daten",
                selectInput("plz", "Postleitzahl:", 
                            choices=unique(mydata$PLZ)),
                hr(),
-               helpText("Die Gruppenbuchungen pro Schule können leider nicht angegeben werden, weil diese nur auf Postleitzahlen-Ebene erfasst werden."),
+               helpText("Die Gruppenbuchungen pro Schule kÃ¶nnen leider nicht angegeben werden, weil diese nur auf Postleitzahlen-Ebene erfasst werden."),
                br(),
                tableOutput('ex1'),width = 4
              ),
              
              # Create a spot for the barplot
              mainPanel(
-               plotOutput("plzPlot")
+               plotOutput("plzPlot"),
+               br(),
+               plotOutput("schulPlot")
+               
              )
              
            )
@@ -83,14 +87,14 @@ tabPanel("About",sidebarPanel(
 <a href="http://shiny.rstudio.com/", target="_blank">Shiny</a> im Rahmen des 
 <a href="https://codingdavinci.de", target="_blank">Coding Da Vinci</a> Kultur-Hackathons gebaut. 
 
-<p style="text-align:justify"><strong>Code:</strong> Den Code für die Shiny-App findet man
+<p style="text-align:justify"><strong>Code:</strong> Den Code f?r die Shiny-App findet man
               <a href="https://github.com/kruse-alex", target="_blank">hier</a>.
               
               <p style="text-align:justify"><strong>Daten:</strong> Die Buchungsdaten der Museen in Hamburg wurde im Rahmen von Coding Da
-Vinci durch die <a href="https://codingdavinci.de/daten", target="_blank">Giant Monkey Software Engineering GmbH</a> zur Verfügung gestellt. Die schulstatistischen Daten kommen von der 
-              <a href="http://www.hamburg.de/schulstatistiken", target="_blank">Behörde für Schule und Berufsbildung</a>. Die Daten zu den Postleitzahlen-Grenzen findet man <a href="https://www.suche-postleitzahl.org/downloads", target="_blank">hier</a>.
+Vinci durch die <a href="https://codingdavinci.de/daten", target="_blank">Giant Monkey Software Engineering GmbH</a> zur VerfÃ¼gung gestellt. Die schulstatistischen Daten kommen von der 
+              <a href="http://www.hamburg.de/schulstatistiken", target="_blank">BehÃ¶rde fÃ¼r Schule und Berufsbildung</a>. Die Daten zu den Postleitzahlen-Grenzen findet man <a href="https://www.suche-postleitzahl.org/downloads", target="_blank">hier</a>.
        
-   <p style="text-align:justify"><strong>Datenaufbereitung:</strong> Die Schulstatistischen Daten berücksichtigen die Anzahl der Schüler von Förderschulen, Gemeinschaftsschulen, Grundschulen, Gymnasien, Sonderschulen und Stadtteilschulen (Gesamtschulen, Realschulen, Hauptschulen). Die Gruppenbuchungen berücksichtigen dementsprechend nur Buchungen von diesen Schulformen. Die Gruppenbuchungen pro Schule können leider nicht angegeben werden, weil diese nur auf Postleitzahlen-Ebene erfasst werden.   
+   <p style="text-align:justify"><strong>Datenaufbereitung:</strong> Die Schulstatistischen Daten berÃ¼cksichtigen die Anzahl der SchÃ¼ler von Grundschulen, Gymnasien, Sonderschulen und Stadtteilschulen (Gesamtschulen, Realschulen, Hauptschulen) und stammen aus 2015/2016. F?r die einzelnen Stadtteile werden dementsprechend nur MuseumsausflÃ¼ge von diesen Schulformen berÃ¼cksichtigt. Es werden MuseumsausflÃ¼ge von Januar 2013 bis Septmber 2016 berÃ¼cksichtigt. Die MuseumsausflÃ¼ge pro Schule kÃ¶nnen leider nicht angegeben werden, weil diese nur auf Postleitzahlen-Ebene erfasst werden.   
        
        </p>'),
   
