@@ -25,6 +25,7 @@ shinyServer(
     mydata <- read.table("mydatafull.csv", header = T, sep = ";")
     pline <- read.table("polyline.csv", header = T, sep = ";")
     
+    # dynamic values
     observe({
       kennzahl_label <- input$kennzahl
       radius <- ger_plz@data[[kennzahl_label]]
@@ -61,7 +62,7 @@ shinyServer(
                              "<br><strong>Musuemsausflüge: </strong>", 
                              artmus$count)
       
-      # map
+      # create map
       output$ger_plz.map <-  renderLeaflet({
         
         ger_plz.map <- leaflet(ger_plz) %>% 
@@ -73,6 +74,7 @@ shinyServer(
           addPolylines(data = pline, lng = ~long, lat = ~lat, group = ~count)
         })
       
+      # create barplots
       output$plzPlot <- renderPlot({
         
         mydata <- read.table("mydatafull.csv", header = T, sep = ";")
@@ -90,7 +92,6 @@ shinyServer(
           theme(legend.position="none")
         })
       
-      # barplot
       output$schulPlot <- renderPlot({
         
         empty <- schools %>% group_by(Schulform) %>% summarise(Schueler = sum(Schueler))
@@ -116,8 +117,7 @@ shinyServer(
         as.data.table(check1, options = list(pageLength = 25))
       )
     })
-    
-    
+
     # dynamic legend
     observe({
       kennzahl_label <- input$kennzahl
@@ -131,11 +131,10 @@ shinyServer(
         # color palette
         pal <- colorNumeric(
           palette = "RdYlGn",
-          domain = radius)
+          domain = radius
+        )
         
-        proxy %>% addLegend(position = "bottomright", title = ifelse(input$kennzahl == "stcnt", paste("Schüler"), ifelse(input$kennzahl == "zipcnt", paste("Musuemsausflüge"), paste("Musuemsausflüge/Schüler"))),
-                            pal = pal, values = ~radius)
-        
+        proxy %>% addLegend(position = "bottomright", title = ifelse(input$kennzahl == "stcnt", paste("Schüler"), ifelse(input$kennzahl == "zipcnt", paste("Musuemsausflüge"), paste("Musuemsausflüge/Schüler"))),pal = pal, values = ~radius)
         proxy %>% addLegend(position = 'topright',colors = c("#0000CD","#000000"),labels = c("Schulen","Museen"),title = '',opacity = 100)
         }
       })
