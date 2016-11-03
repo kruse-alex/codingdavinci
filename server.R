@@ -17,6 +17,7 @@ require(data.table)
 shinyServer(
   function(input, output, session){
     
+    # load data
     setwd("C:/Users/akruse/Documents/R/CDV/hhmuseum")
     ger_plz <- readOGR(dsn = ".", layer = "gerplz3")
     schools <- read.table("SchulenPLZfull2.csv", header = T, sep = ";")
@@ -35,7 +36,7 @@ shinyServer(
         domain = radius
         )
       
-      # create pop up
+      # create pop ups
       state_popup <- paste0("<strong>Postleitzahl: </strong>", 
                             ger_plz@data$note, 
                             "<br><strong>Musuemsausflüge: </strong>", 
@@ -74,6 +75,7 @@ shinyServer(
           #addPolylines(data = pline, lng = ~long, lat = ~lat, group = ~count)
         })
       
+      # barplot
       output$plzPlot <- renderPlot({
         
         mydata <- read.table("mydatafull.csv", header = T, sep = ";")
