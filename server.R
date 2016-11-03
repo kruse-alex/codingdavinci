@@ -17,15 +17,14 @@ require(data.table)
 shinyServer(
   function(input, output, session){
     
-    #setwd("C:/Users/akruse/Documents/R/CDV/CDVapp/")
+    setwd("C:/Users/akruse/Documents/R/CDV/hhmuseum")
     ger_plz <- readOGR(dsn = ".", layer = "gerplz3")
     schools <- read.table("SchulenPLZfull2.csv", header = T, sep = ";")
     schools2 <- read.table("SchulenPLZfull3.csv", header = T, sep = ";")
     artmus <- read.table("museen_liste2.csv", header = T, sep = ",")
     mydata <- read.table("mydatafull.csv", header = T, sep = ";")
-    pline <- read.table("polyline.csv", header = T, sep = ";")
+    #pline <- read.table("polyline.csv", header = T, sep = ";")
     
-    # dynamic values
     observe({
       kennzahl_label <- input$kennzahl
       radius <- ger_plz@data[[kennzahl_label]]
@@ -62,19 +61,19 @@ shinyServer(
                              "<br><strong>Musuemsausflüge: </strong>", 
                              artmus$count)
       
-      # create map
+      # map
       output$ger_plz.map <-  renderLeaflet({
         
         ger_plz.map <- leaflet(ger_plz) %>% 
           addTiles('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',attribution='Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>')
-        
-        ger_plz.map %>% addPolygons(stroke = T, smoothFactor = 0.2, fillOpacity = 0.7, color = "black", weight = 2,fillColor = ~pal(radius),popup = state_popup) %>%
+        ger_plz.map %>% 
+          #setView(lng = 53.550967, lat = 9.993807, zoom = 6) %>%
+          addPolygons(stroke = T, smoothFactor = 0.2, fillOpacity = 0.7, color = "black", weight = 2,fillColor = ~pal(radius),popup = state_popup) %>%
           addCircles(lng = artmus$longitude, lat = artmus$latitude, popup = artmus_popup, fillOpacity = 100, fillColor = "#000000", stroke = F, radius = 170, group = "locations_2") %>%
-          addCircles(lng = schools2$longitude, lat = schools2$latitude, popup = schule_popup, fillOpacity = 100, fillColor = "#0000CD", stroke = F, radius = 100, group = "locations") %>%
-          addPolylines(data = pline, lng = ~long, lat = ~lat, group = ~count)
+          addCircles(lng = schools2$longitude, lat = schools2$latitude, popup = schule_popup, fillOpacity = 100, fillColor = "#0000CD", stroke = F, radius = 100, group = "locations")
+          #addPolylines(data = pline, lng = ~long, lat = ~lat, group = ~count)
         })
       
-      # create barplots
       output$plzPlot <- renderPlot({
         
         mydata <- read.table("mydatafull.csv", header = T, sep = ";")
@@ -92,6 +91,7 @@ shinyServer(
           theme(legend.position="none")
         })
       
+      # barplot
       output$schulPlot <- renderPlot({
         
         empty <- schools %>% group_by(Schulform) %>% summarise(Schueler = sum(Schueler))
@@ -117,7 +117,8 @@ shinyServer(
         as.data.table(check1, options = list(pageLength = 25))
       )
     })
-
+    
+    
     # dynamic legend
     observe({
       kennzahl_label <- input$kennzahl
@@ -131,10 +132,11 @@ shinyServer(
         # color palette
         pal <- colorNumeric(
           palette = "RdYlGn",
-          domain = radius
-        )
+          domain = radius)
         
-        proxy %>% addLegend(position = "bottomright", title = ifelse(input$kennzahl == "stcnt", paste("Schüler"), ifelse(input$kennzahl == "zipcnt", paste("Musuemsausflüge"), paste("Musuemsausflüge/Schüler"))),pal = pal, values = ~radius)
+        proxy %>% addLegend(position = "bottomright", title = ifelse(input$kennzahl == "stcnt", paste("Schüler"), ifelse(input$kennzahl == "zipcnt", paste("Musuemsausflüge"), paste("Musuemsausflüge/Schüler"))),
+                            pal = pal, values = ~radius)
+        
         proxy %>% addLegend(position = 'topright',colors = c("#0000CD","#000000"),labels = c("Schulen","Museen"),title = '',opacity = 100)
         }
       })
